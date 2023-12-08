@@ -2,7 +2,8 @@ let firstNumber = 0,
     secondNumber = 0;
 
 let operator = "",
-    inputText = "";
+    inputText = "",
+    inputNumber = "";
 
 let inputQueue = [],
     numberQueue = [],
@@ -12,11 +13,33 @@ let buttons = document.querySelectorAll("#calculator-buttons button"),
     textArea = document.querySelector('#text-area'),
     backSpaceButton = document.querySelector('#back-space-button');
 
+let firstLoop = true;
+
 buttons.forEach(button => {
     if (button.id != 'back-space-button' 
     && button.id != 'result-button') {
         button.addEventListener('click', () => {
-            displayOnTheScreen(button);
+            inputText += button.textContent;
+            updateTextArea(inputText);
+            
+            if (button.classList.contains('number')) {
+                inputNumber += button.textContent;
+            }
+            
+            else if (button.classList.contains('operator')){
+                if(inputNumber != ""){
+                    numberQueue.push(+inputNumber);
+                    if(firstLoop) {
+                        firstNumber = numberQueue[0]
+                    }
+                    firstLoop = false;
+
+                    
+                }
+                signQueue.push(button.textContent);
+                inputNumber = "";
+            }
+            inputQueue.push(button.textContent);
         });
     }
 
@@ -29,6 +52,9 @@ buttons.forEach(button => {
     }
 
 })
+
+showResult();
+
 
 function add(firstNumber, secondNumber) {
     return firstNumber + secondNumber;
@@ -59,17 +85,14 @@ function operate(firstNum = firstNumber, operator, secondNum){
             result = multiply(firstNum, secondNum);
             break;
         case "/":
-            result = subtract(firstNum, secondNum);
+            result = divide(firstNum, secondNum);
             break;
     }
     firstNumber = result;
+    numberQueue.unshift(firstNumber);
 }
 
-function displayOnTheScreen(button) {
-    inputQueue.push(button.textContent);
-    inputText += button.textContent;
-    updateTextArea(inputText);
-}
+
 
 function backSpace() {
     inputText = inputText.substring(0, inputText.length - 1);
@@ -78,9 +101,21 @@ function backSpace() {
 }
 
 function showResult() {
+    if(inputNumber != ""){
+        numberQueue.push(+inputNumber);
+    }
+    inputNumber = "";
+    //firstNumber = numberQueue.shift();
+    //firstNumber = numberQueue.shift();
+    while(signQueue.length > 0){
+        operate(numberQueue.shift(), signQueue.shift(), numberQueue.shift());
+        updateTextArea(numberQueue[0]);
+    }
 
 }
 
-function updateTextArea(inputText) {
-    textArea.textContent = inputText;
+function updateTextArea(value) {
+    textArea.textContent = value;
+    inputText = value.toString();
+
 }
