@@ -53,9 +53,6 @@ buttons.forEach(button => {
 
 })
 
-showResult();
-
-
 function add(firstNumber, secondNumber) {
     return firstNumber + secondNumber;
 }
@@ -93,7 +90,6 @@ function operate(firstNum = firstNumber, operator, secondNum){
 }
 
 
-
 function backSpace() {
     inputText = inputText.substring(0, inputText.length - 1);
     inputQueue.pop();
@@ -105,8 +101,7 @@ function showResult() {
         numberQueue.push(+inputNumber);
     }
     inputNumber = "";
-    //firstNumber = numberQueue.shift();
-    //firstNumber = numberQueue.shift();
+
     while(signQueue.length > 0){
         operate(numberQueue.shift(), signQueue.shift(), numberQueue.shift());
         updateTextArea(numberQueue[0]);
